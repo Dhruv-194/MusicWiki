@@ -5,6 +5,7 @@ MusicWiki is an unofficial Last.fm app that contains information about different
 - Kotlin Programming Language
 - [lastfm api](https://www.last.fm/api)
 - Glide Image Library
+- Retrofit Library
 - Android Studio
 
 ## Features of the app - 
@@ -24,10 +25,12 @@ MusicWiki is an unofficial Last.fm app that contains information about different
 - **MVVM Architecture** : Followed clean architecture and MVVM design pattern. Followed the respositoy pattern where API calls happen through repostiory and it becomes the single source of truth for the app. The ViewModels can access the repostiory and then provide the Livedata to the activities and fragments to observe.
 - **Coroutines** : Used coroutines to asynchronously call the API in background. Also used coroutines while displaying and observing the Livedata. 
 - **Glide Image Library** : Used the famous Glide Library to parse the url of the images that are getting fetched from the API and then display it.
+- **Retrofit Library** : Used the Retrofit library which is type-safe HTTP client for Android for interacting with API.
 - **ViewPager and Adapter** : USed the concept of VIewPager and ViewPager Adapter to show the split of 'Albums', 'Artists' & 'Tracks', of a particular genre.
 
 ## Decisions & Assumptions -
 - Changed the intial UI of the app. Instead of going with the TabLayout I went with the normal RecyclerView to display all the topTags/topGenres on the homescreen. 
+- Used the Retrofit library instead of the Volley library.
 - Did not work properly on the UI as time was pretty less so tried to make it as minimalistic as possible. 
 - Had to create many dataclasses because the API is not well maintained and changes its parameters. Making dataclasses un-reusable. 
 - For the Artisits and Tracks section the images are not visible because the API itself doesn't provide the right image URL. 
