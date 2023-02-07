@@ -32,9 +32,10 @@ MusicWiki is an unofficial Last.fm app that contains information about different
 - Had to create many dataclasses because the API is not well maintained and changes its parameters. Making dataclasses un-reusable. 
 - For the Artisits and Tracks section the images are not visible because the API itself doesn't provide the right image URL. 
 - In the 'ArtistInfo Activity' its the number of listenres and not the number of followers. 
+- Did not coonvert the listeners and playcounts to the nearest number to show it in 'k' format.
 
 ## Working of the app - 
-
+<img src="Screenshots/MusicWikiWorking.gif" height = "400" width="200">
 
 ## Screenshots -
 
