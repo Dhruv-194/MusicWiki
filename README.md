@@ -37,5 +37,5 @@ MusicWiki is an unofficial Last.fm app that contains information about different
 ## Working of the app - 
 <img src="Screenshots/MusicWikiWorking.gif" height = "400" width="200">
 
-## Screenshots -
+### Download and Test the app [here](https://drive.google.com/file/d/1TmVYAH4BCNjGt8iQHFAOujtSLTyoX79W/view?usp=share_link)
 
