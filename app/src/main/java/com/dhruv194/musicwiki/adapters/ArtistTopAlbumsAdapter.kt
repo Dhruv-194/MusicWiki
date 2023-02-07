@@ -1,13 +1,16 @@
 package com.dhruv194.musicwiki.adapters
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.dhruv194.musicwiki.AlbumInfoActivity
 import com.dhruv194.musicwiki.databinding.CardItemBinding
 import com.dhruv194.musicwiki.dataclasses.AlbumXXX
 import com.dhruv194.musicwiki.loadImage
 
-class ArtistTopAlbumsAdapter: RecyclerView.Adapter<ArtistTopAlbumsAdapter.ArtistTopAlbumsViewHolder>() {
+class ArtistTopAlbumsAdapter(var mContext: Context): RecyclerView.Adapter<ArtistTopAlbumsAdapter.ArtistTopAlbumsViewHolder>() {
     inner class ArtistTopAlbumsViewHolder(val binding: CardItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     var artistTopAlbums : List<AlbumXXX> = emptyList()
@@ -26,10 +29,16 @@ class ArtistTopAlbumsAdapter: RecyclerView.Adapter<ArtistTopAlbumsAdapter.Artist
             itemArtistName.text = artistTopAlbums[position].artist.name
             itemImg.loadImage(artistTopAlbums[position].image[0].text)
         }
+        holder.binding.root.setOnClickListener {
+            val mIntent = Intent(mContext, AlbumInfoActivity::class.java)
+            mIntent.putExtra("ANAME",artistTopAlbums[position].name)
+            mIntent.putExtra("ARNAME",artistTopAlbums[position].artist.name)
+            mContext.startActivity(mIntent)
+        }
     }
 
     override fun getItemCount(): Int {
         return artistTopAlbums.size
     }
-
 }
+

@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dhruv194.musicwiki.MainViewModelFactory
 import com.dhruv194.musicwiki.R
 import com.dhruv194.musicwiki.adapters.GenreArtistsAdapter
 import com.dhruv194.musicwiki.adapters.GenreTracksAdapter
@@ -16,6 +19,8 @@ import com.dhruv194.musicwiki.api.RetrofitInstance
 import com.dhruv194.musicwiki.databinding.FragmentGenreArtistsBinding
 import com.dhruv194.musicwiki.databinding.FragmentGenreTracksBinding
 import com.dhruv194.musicwiki.dataclasses.genreTracks
+import com.dhruv194.musicwiki.repository.Repository
+import com.dhruv194.musicwiki.viewmodel.MainViewModel
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -24,6 +29,7 @@ class GenreTracksFragment (var genreName: String) : Fragment() {
 
     private lateinit var binding: FragmentGenreTracksBinding
     private lateinit var genreTracksAdapter: GenreTracksAdapter
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +47,21 @@ class GenreTracksFragment (var genreName: String) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        lifecycleScope.launchWhenCreated {
+
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel.getTagTopTracks(genreName.toString())
+        viewModel.tagTopTracksResponse.observe(viewLifecycleOwner, Observer { response->
+            if (response.isSuccessful){
+                setupRecyclerView()
+                genreTracksAdapter.genreTracks = response.body()!!.tracks.track
+            } else{
+                Log.d("TAG", "error"+response.code())
+            }
+        })
+
+      /*  lifecycleScope.launchWhenCreated {
             binding.tracksRvPb.isVisible = true
             val response1  = try {
                 RetrofitInstance.api.getTopTracks(genreName)
@@ -60,10 +80,10 @@ class GenreTracksFragment (var genreName: String) : Fragment() {
                 Log.d("TASG", "Response not successful")
             }
             binding.tracksRvPb.isVisible = false
-        }
+        }*/
     }
 
-    private fun setupRecyclerView() =binding.tracksRv.apply {
+    private fun setupRecyclerView() = binding.tracksRv.apply {
         genreTracksAdapter = GenreTracksAdapter()
         adapter = genreTracksAdapter
         layoutManager = LinearLayoutManager(context)

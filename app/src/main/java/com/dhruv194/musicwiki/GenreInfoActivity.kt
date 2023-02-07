@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.dhruv194.musicwiki.adapters.ViewPagerAdapter
@@ -12,6 +14,8 @@ import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding
 import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding.bind
 import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding.inflate
 import com.dhruv194.musicwiki.databinding.GenreItemBinding
+import com.dhruv194.musicwiki.repository.Repository
+import com.dhruv194.musicwiki.viewmodel.MainViewModel
 import com.google.android.material.tabs.TabLayout
 import retrofit2.HttpException
 import java.io.IOException
@@ -19,6 +23,9 @@ import java.io.IOException
 class GenreInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGenreInfoBinding
     lateinit var viewPagerAdapter  : ViewPagerAdapter
+
+    private lateinit var viewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGenreInfoBinding.inflate(layoutInflater)
@@ -53,7 +60,24 @@ class GenreInfoActivity : AppCompatActivity() {
             }
         })
 
-        lifecycleScope.launchWhenCreated {
+        val repository = Repository()
+        val viewModelFactory = MainViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel.getTagInfo(name.toString())
+        viewModel.tagInfoResponse.observe(this, Observer { response->
+
+            if(response.isSuccessful){
+                binding.genreTitle.text = response.body()!!.tag.name
+                binding.genreDesc.text = response.body()!!.tag.wiki.summary
+            }
+            else{
+                Log.d("TAG", "error"+response.code())
+            }
+
+        })
+
+
+        /*lifecycleScope.launchWhenCreated {
             binding.genreInfoPb.isVisible = true
             val response  = try {
                 RetrofitInstance.api.getTagInfo(name.toString())
@@ -74,6 +98,6 @@ class GenreInfoActivity : AppCompatActivity() {
                 Log.d("TASG", "Response not successful")
             }
             binding.genreInfoPb.isVisible = false
-        }
+        }*/
     }
 }
