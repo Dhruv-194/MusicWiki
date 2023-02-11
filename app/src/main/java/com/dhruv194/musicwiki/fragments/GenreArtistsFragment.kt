@@ -50,36 +50,31 @@ class GenreArtistsFragment(var genreName: String) : Fragment() {
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.getTagTopArtists(genreName.toString())
-        viewModel.tagTopArtistsResposne.observe(viewLifecycleOwner, Observer { response->
-            if (response.isSuccessful){
-                setupRecyclerView()
-                genreArtistsAdapter.genreArtists = response.body()!!.topartists.artist
-            }
-            else{
-                Log.d("TAG", "error"+response.code())
-            }
-        })
+        viewModel.tagTopArtistsResposne.observe(viewLifecycleOwner) { topArtists ->
+            setupRecyclerView()
+            genreArtistsAdapter.genreArtists = topArtists
+        }
 
-       /* lifecycleScope.launchWhenCreated {
-            binding.artistsRvPb.isVisible = true
-            val response  = try {
-                RetrofitInstance.api.getTopArtists(genreName)
-            }catch (e: IOException){
-                binding.artistsRvPb.isVisible = false
-                return@launchWhenCreated
-            }catch (e : HttpException){
-                Log.d("TASG", "HttpException "+e)
-                binding.artistsRvPb.isVisible = false
-                return@launchWhenCreated
-            }
+        /* lifecycleScope.launchWhenCreated {
+             binding.artistsRvPb.isVisible = true
+             val response  = try {
+                 RetrofitInstance.api.getTopArtists(genreName)
+             }catch (e: IOException){
+                 binding.artistsRvPb.isVisible = false
+                 return@launchWhenCreated
+             }catch (e : HttpException){
+                 Log.d("TASG", "HttpException "+e)
+                 binding.artistsRvPb.isVisible = false
+                 return@launchWhenCreated
+             }
 
-            if(response.isSuccessful && response.body()!=null){
-                genreArtistsAdapter.genreArtists = response.body()!!.topartists.artist
-            }else{
-                Log.d("TASG", "Response not successful")
-            }
-            binding.artistsRvPb.isVisible = false
-        }*/
+             if(response.isSuccessful && response.body()!=null){
+                 genreArtistsAdapter.genreArtists = response.body()!!.topartists.artist
+             }else{
+                 Log.d("TASG", "Response not successful")
+             }
+             binding.artistsRvPb.isVisible = false
+         }*/
     }
 
     private fun setupRecyclerView() =binding.artistsRv.apply {

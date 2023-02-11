@@ -52,35 +52,31 @@ class GenreTracksFragment (var genreName: String) : Fragment() {
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.getTagTopTracks(genreName.toString())
-        viewModel.tagTopTracksResponse.observe(viewLifecycleOwner, Observer { response->
-            if (response.isSuccessful){
-                setupRecyclerView()
-                genreTracksAdapter.genreTracks = response.body()!!.tracks.track
-            } else{
-                Log.d("TAG", "error"+response.code())
-            }
-        })
+        viewModel.tagTopTracksResponse.observe(viewLifecycleOwner) { topTracks ->
+            setupRecyclerView()
+            genreTracksAdapter.genreTracks = topTracks
+        }
 
-      /*  lifecycleScope.launchWhenCreated {
-            binding.tracksRvPb.isVisible = true
-            val response1  = try {
-                RetrofitInstance.api.getTopTracks(genreName)
-            }catch (e: IOException){
-                binding.tracksRvPb.isVisible = false
-                return@launchWhenCreated
-            }catch (e : HttpException){
-                Log.d("TASG", "HttpException "+e)
-                binding.tracksRvPb.isVisible = false
-                return@launchWhenCreated
-            }
+        /*  lifecycleScope.launchWhenCreated {
+              binding.tracksRvPb.isVisible = true
+              val response1  = try {
+                  RetrofitInstance.api.getTopTracks(genreName)
+              }catch (e: IOException){
+                  binding.tracksRvPb.isVisible = false
+                  return@launchWhenCreated
+              }catch (e : HttpException){
+                  Log.d("TASG", "HttpException "+e)
+                  binding.tracksRvPb.isVisible = false
+                  return@launchWhenCreated
+              }
 
-            if(response1.isSuccessful && response1.body()!=null){
-                genreTracksAdapter.genreTracks = response1.body()!!.tracks.track
-            }else{
-                Log.d("TASG", "Response not successful")
-            }
-            binding.tracksRvPb.isVisible = false
-        }*/
+              if(response1.isSuccessful && response1.body()!=null){
+                  genreTracksAdapter.genreTracks = response1.body()!!.tracks.track
+              }else{
+                  Log.d("TASG", "Response not successful")
+              }
+              binding.tracksRvPb.isVisible = false
+          }*/
     }
 
     private fun setupRecyclerView() = binding.tracksRv.apply {

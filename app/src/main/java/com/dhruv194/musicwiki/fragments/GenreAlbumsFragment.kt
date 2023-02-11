@@ -49,36 +49,31 @@ class GenreAlbumsFragment(var genreName: String) : Fragment() {
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.getTagTopAlbums(genreName.toString())
-        viewModel.tagTopAlbumsResponse.observe(viewLifecycleOwner, Observer { response->
-            if(response.isSuccessful){
-                setupRecyclerView()
-                genreAlbumsAdapter.genreAlbums = response.body()!!.albums.album
-            }
-            else{
-                Log.d("TAG", "error"+response.code())
-            }
-        })
+        viewModel.tagTopAlbumsResponse.observe(viewLifecycleOwner) { topAlbums ->
+            setupRecyclerView()
+            genreAlbumsAdapter.genreAlbums = topAlbums
+        }
 
-       /* lifecycleScope.launchWhenCreated {
-            binding.albumsRvPb.isVisible = true
-            val response  = try {
-                RetrofitInstance.api.getTopAlbums(genreName)
-            }catch (e: IOException){
-                binding.albumsRvPb.isVisible = false
-                return@launchWhenCreated
-            }catch (e : HttpException){
-                Log.d("TASG", "HttpException "+e)
-                binding.albumsRvPb.isVisible = false
-                return@launchWhenCreated
-            }
+        /* lifecycleScope.launchWhenCreated {
+             binding.albumsRvPb.isVisible = true
+             val response  = try {
+                 RetrofitInstance.api.getTopAlbums(genreName)
+             }catch (e: IOException){
+                 binding.albumsRvPb.isVisible = false
+                 return@launchWhenCreated
+             }catch (e : HttpException){
+                 Log.d("TASG", "HttpException "+e)
+                 binding.albumsRvPb.isVisible = false
+                 return@launchWhenCreated
+             }
 
-            if(response.isSuccessful && response.body()!=null){
-                genreAlbumsAdapter.genreAlbums = response.body()!!.albums.album
-            }else{
-                Log.d("TASG", "Response not successful")
-            }
-            binding.albumsRvPb.isVisible = false
-        }*/
+             if(response.isSuccessful && response.body()!=null){
+                 genreAlbumsAdapter.genreAlbums = response.body()!!.albums.album
+             }else{
+                 Log.d("TASG", "Response not successful")
+             }
+             binding.albumsRvPb.isVisible = false
+         }*/
     }
 
     private fun setupRecyclerView() =binding.albumsRv.apply {

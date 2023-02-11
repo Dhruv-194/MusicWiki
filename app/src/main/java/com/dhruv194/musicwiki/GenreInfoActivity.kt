@@ -14,6 +14,7 @@ import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding
 import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding.bind
 import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding.inflate
 import com.dhruv194.musicwiki.databinding.GenreItemBinding
+import com.dhruv194.musicwiki.dataclasses.TagX
 import com.dhruv194.musicwiki.repository.Repository
 import com.dhruv194.musicwiki.viewmodel.MainViewModel
 import com.google.android.material.tabs.TabLayout
@@ -64,17 +65,10 @@ class GenreInfoActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.getTagInfo(name.toString())
-        viewModel.tagInfoResponse.observe(this, Observer { response->
-
-            if(response.isSuccessful){
-                binding.genreTitle.text = response.body()!!.tag.name
-                binding.genreDesc.text = response.body()!!.tag.wiki.summary
-            }
-            else{
-                Log.d("TAG", "error"+response.code())
-            }
-
-        })
+        viewModel.tagInfoResponse.observe(this) { info: TagX ->
+            binding.genreTitle.text = info.name
+            binding.genreDesc.text = info.wiki.summary
+        }
 
 
         /*lifecycleScope.launchWhenCreated {

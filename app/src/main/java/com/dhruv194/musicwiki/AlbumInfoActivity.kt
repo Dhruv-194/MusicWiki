@@ -14,6 +14,7 @@ import com.dhruv194.musicwiki.adapters.ViewPagerAdapter
 import com.dhruv194.musicwiki.api.RetrofitInstance
 import com.dhruv194.musicwiki.databinding.ActivityAlbumInfoBinding
 import com.dhruv194.musicwiki.databinding.ActivityGenreInfoBinding
+import com.dhruv194.musicwiki.dataclasses.AlbumX
 import com.dhruv194.musicwiki.repository.Repository
 import com.dhruv194.musicwiki.viewmodel.MainViewModel
 import retrofit2.HttpException
@@ -40,18 +41,16 @@ class AlbumInfoActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.getAlbumInfo(arname.toString(), aname.toString())
-        viewModel.albumInfoResponse.observe(this, Observer { response->
-            if(response.isSuccessful && response.body()!=null){
-                setUpRecyclerView()
-                albumInfoGenreAdapter.albumInfoGenre = response.body()!!.album.tags.tag
-                binding.albumTitle.text = response.body()!!.album.name
-                binding.artistTitle.text = response.body()!!.album.artist
-                binding.albumDesc.text = response.body()!!.album.wiki.summary
-                binding.albumImg.loadImage(response.body()!!.album.image[0].text)
-            }else{
-                Log.d("TASG", "Response not successful")
-            }
-        })
+        viewModel.albumInfoResponse.observe(this) { info ->
+
+            setUpRecyclerView()
+            albumInfoGenreAdapter.albumInfoGenre = info.tags.tag
+            binding.albumTitle.text = info.name
+            binding.artistTitle.text = info.artist
+            binding.albumDesc.text = info.wiki.summary
+            binding.albumImg.loadImage(info.image[0].text)
+
+        }
 
         /*lifecycleScope.launchWhenCreated {
             binding.albumInfoPb.isVisible = true

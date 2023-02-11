@@ -34,41 +34,32 @@ class MainActivity : AppCompatActivity() {
         val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-        viewModel.getTopTags()
-        viewModel.topTagResponse.observe(this, Observer { response->
-            binding.genreRvPb.isVisible = true
-            if(response.isSuccessful){
+        viewModel.topTagResponse.observe(this) { tags ->
                 setUpRecyclerView()
-                genreAdapter.genres = response.body()!!.toptags.tag
-                binding.genreRvPb.isVisible = false
-            }
-            else{
-                Log.d("TAG", "error"+response.code())
-            }
+                genreAdapter.genres = tags
+        }
 
-        })
+        /* lifecycleScope.launchWhenCreated {
+             binding.genreRvPb.isVisible = true
+             val response  = try {
+                 RetrofitInstance.api.getTopTags()
+             }catch (e: IOException){
+                 Log.d("TASG", "IOException "+e)
+                 binding.genreRvPb.isVisible = false
+                 return@launchWhenCreated
+             }catch (e : HttpException){
+                 Log.d("TASG", "HttpException "+e)
+                 binding.genreRvPb.isVisible = false
+                 return@launchWhenCreated
+             }
 
-       /* lifecycleScope.launchWhenCreated {
-            binding.genreRvPb.isVisible = true
-            val response  = try {
-                RetrofitInstance.api.getTopTags()
-            }catch (e: IOException){
-                Log.d("TASG", "IOException "+e)
-                binding.genreRvPb.isVisible = false
-                return@launchWhenCreated
-            }catch (e : HttpException){
-                Log.d("TASG", "HttpException "+e)
-                binding.genreRvPb.isVisible = false
-                return@launchWhenCreated
-            }
-
-            if(response.isSuccessful && response.body()!=null){
-                genreAdapter.genres = response.body()!!.toptags.tag
-            }else{
-                Log.d("TASG", "Response not successful")
-            }
-            binding.genreRvPb.isVisible = false
-        }*/
+             if(response.isSuccessful && response.body()!=null){
+                 genreAdapter.genres = response.body()!!.toptags.tag
+             }else{
+                 Log.d("TASG", "Response not successful")
+             }
+             binding.genreRvPb.isVisible = false
+         }*/
     }
 
     private fun setUpRecyclerView()  = binding.genreRv.apply {
